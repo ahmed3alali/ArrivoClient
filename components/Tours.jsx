@@ -7,7 +7,7 @@ import Link from "next/link";
 import PrevTitle from "./PrevTitle";
 import { Ban } from 'lucide-react';
 import { useQuery } from '@apollo/client';
-import { GET_ONE_DAY_TRIPS } from '../../client/graphql/queries'; // Adjust path as needed
+import { GET_ONE_DAY_TRIPS } from '../graphql/queries' // Adjust path as needed
 
 const Tour = ({tour, createPersonsArabic}) => {
   // Map GraphQL data to component props

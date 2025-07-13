@@ -1,4 +1,6 @@
 import Head from "next/head";
+import React, { useState, useEffect } from "react";
+
 import ContactShort from "../../components/ContactShort";
 import Footer from "../../components/common/Footer";
 import Navbar from "../../components/common/Navbar";

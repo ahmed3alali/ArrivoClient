@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from "react";
 import ReactModal from "react-modal";
 import { gql, useQuery } from "@apollo/client";
-import FilterBar from "./programsMainBodyComponents/FilterBar";
+import FilterBar from "../../../components/FilterBar";
 import ProgramsMainBody from "./ProgramsMainBody";
 
 ReactModal.setAppElement("#__next");
