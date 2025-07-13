@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply font-["Alexandria"];
+  }
+  .wrapper {
+    @apply mx-auto max-w-[95%] md:max-w-[87%] lg:max-w-[85%] xl:max-w-[1280px];
+  }
+  .orange-hover {
+    @apply duration-500 border-2 border-solid cursor-pointer hover:bg-white hover:shadow-md border-orange hover:text-orange;
+  }
+  .bluish-hover {
+    @apply duration-500 border-2 border-solid cursor-pointer hover:bg-[#02151F] hover:shadow-md border-[#02151F];
+  }
+ 
+}
+*{
+  scroll-behavior: smooth;
+}
+
+input.PhoneInputInput {
+  border: 0 !important;
+  outline: none !important;
+  background: transparent;
+}
+
+div.PhoneInputCountrySelectArrow {
+  margin: 0px 10px;
+}
+
+
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+
+.service-shadow {
+  box-shadow: 2px 2px 0px #4d4d4d;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.my-slider-container {
+  transform: scaleX(-1);
+}
+
+     .min-w {
+       min-width: 900px;
+     }
+  
+     .fixed {
+       position: fixed;
+       top: 0;
+       left: 0;
+       width: 100%;
+       z-index: 999;
+      padding: 8px 80px;
+     }
+
+
+
+         .image-grid {
+           display: grid;
+           grid-gap: 10px;
+           /* You can change the gap size to your liking */
+           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+           /* This will create columns that adjust to fit the available space,
+         with a minimum width of 200px and a maximum width of 1fr (i.e. equal width) */
+         }
+    
+         .image-grid img {
+           max-width: 100%;
+           height: auto;
+           object-fit: cover;           
+           /* This will make sure all images fill their container without stretching them */
+         }
+
+         #liner{
+          background: "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.0086472) 5.22%, rgba(255, 255, 255, 0.03551) 10.43%, rgba(255, 255, 255, 0.0816599) 15.65%, rgba(255, 255, 255, 0.147411) 20.86%, rgba(255, 255, 255, 0.231775) 26.08%, rgba(255, 255, 255, 0.331884) 31.29%, rgba(255, 255, 255, 0.442691) 36.51%, rgba(255, 255, 255, 0.557309) 41.73%, rgba(255, 255, 255, 0.668116) 46.94%, rgba(255, 255, 255, 0.768225) 52.16%, rgba(255, 255, 255, 0.852589) 57.37%, rgba(255, 255, 255, 0.91834) 62.59%, rgba(255, 255, 255, 0.96449) 67.8%, rgba(255, 255, 255, 0.991353) 73.02%, #FFFFFF 78.24%), linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.0086472) 5.22%, rgba(255, 255, 255, 0.03551) 10.43%, rgba(255, 255, 255, 0.0816599) 15.65%, rgba(255, 255, 255, 0.147411) 20.86%, rgba(255, 255, 255, 0.231775) 26.08%, rgba(255, 255, 255, 0.331884) 31.29%, rgba(255, 255, 255, 0.442691) 36.51%, rgba(255, 255, 255, 0.557309) 41.73%, rgba(255, 255, 255, 0.668116) 46.94%, rgba(255, 255, 255, 0.768225) 52.16%, rgba(255, 255, 255, 0.852589) 57.37%, rgba(255, 255, 255, 0.91834) 62.59%, rgba(255, 255, 255, 0.96449) 67.8%, rgba(255, 255, 255, 0.991353) 73.02%, #FFFFFF 78.24%)";
+         }
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 5px solid #F08631;
+  cursor: pointer;
+  
+}
+
+input[type=range]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #fff;
+    border: 5px solid #F08631;
+  cursor: pointer;
+}
+
+/* input[type="checkbox"] {
+  display: none;
+} */
+
+input[type=checkbox] {
+width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 5px solid #F08631;
+  cursor: pointer;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translate(-50%,100%);
+  }
+
+  to {
+    transform: translate(-50%,0);
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translate(-50%, 0);
+  }
+
+  to {
+    transform: translate(-50%, 100%);
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 88888;
+}
+
+
+.select-container {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.select-container.show {
+  opacity: 1;
+}
+
+
+
+.slick-slider .slick-arrow {
+  display: block !important;
+  z-index: 1000;
+}
