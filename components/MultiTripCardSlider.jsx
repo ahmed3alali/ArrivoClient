@@ -40,7 +40,7 @@ const MultiTripCardSlider = ({ trips , isSingle = false }) => {
       >
         {trips.map(({node}) => (
           <MultiDayTripCard
-     
+     key={node.id}
             trip={node}
             isSingle={isSingleCard}
           

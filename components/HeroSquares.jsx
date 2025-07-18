@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useRouter } from "next/router";
 
 const countrySquares = [
@@ -52,9 +53,11 @@ export const HeroSquares = () => {
               }}
               aria-label={`عرض البرامج في ${name}`}
             >
-              <img
+              <Image
                 src={img}
                 alt={name}
+                width={56}
+                height={56}
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
