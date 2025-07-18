@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import SlickSlider from "../sub/SlickSlider";
 import Link from "next/link";
 
-const BASE_URL = "https://backend.arrivotravel.com/media"; // Change in production
+
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
 const ProgramPics = ({ trip, isProgramTravel, viewingTrip }) => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -33,7 +36,7 @@ const ProgramPics = ({ trip, isProgramTravel, viewingTrip }) => {
 
     if (trip?.galleryImages?.length) {
       trip.galleryImages.forEach((img) => {
-        imgs.push({ src: `${BASE_URL}/${img.picture}` });
+        imgs.push({ src: `${BASE_URL}/media/${img.picture}` });
       });
     }
   } else {
@@ -42,7 +45,7 @@ const ProgramPics = ({ trip, isProgramTravel, viewingTrip }) => {
 
 
     if (trip?.cardThumbnail) {
-      imgs.push({ src: `${BASE_URL}/${trip.cardThumbnail}` });
+      imgs.push({ src: `${BASE_URL}/media/${trip.cardThumbnail}` });
     }
 
 
@@ -50,7 +53,7 @@ const ProgramPics = ({ trip, isProgramTravel, viewingTrip }) => {
 
     if (trip?.galleryImages?.length) {
       trip.galleryImages.forEach((img) => {
-        imgs.push({ src: `${BASE_URL}/${img.picture}` });
+        imgs.push({ src: `${BASE_URL}/media/${img.picture}` });
       });
     }
   }
@@ -147,7 +150,7 @@ const ProgramPics = ({ trip, isProgramTravel, viewingTrip }) => {
         )}
 
         <Link
-          href="/travels-programs/program/travels-images"
+          href={`/travels-programs/${trip.id}/travels-images`}
           className="absolute bottom-[10px] left-[10px] md:bottom-[15px] md:left-[15px] flex justify-center items-center gap-[8px] h-[40px] py-[10px] px-[16px] bg-white text-black border-0 outline-none rounded-[8px]"
         >
           <span className="text-[12px]">أظهر المزيد من الصور</span>

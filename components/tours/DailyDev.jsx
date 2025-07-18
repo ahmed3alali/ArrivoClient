@@ -6,6 +6,8 @@ import Link from "next/link";
 import PrevTitle from "./PrevTitle";
 import { GET_ONE_DAY_TRIPS } from "../graphql/queries";
 import { useQuery } from "@apollo/client";
+import LoaderExternal from "../LoadingExternal";
+import { ErrorMessage } from "../ErrorMessage";
 
 const destins = [
   {
@@ -141,10 +143,13 @@ const settings = {
   // rtl: true,
 };
 const DailyDests = () => {
+
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  
   const { loading, error, data } = useQuery(GET_ONE_DAY_TRIPS);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading trips</p>;
+  if (loading) return <LoaderExternal/>;
+  if (error) return <ErrorMessage/>;
 
   const oneDayTrips = data?.trips?.edges
     ?.filter(({ node }) => node.__typename === "OneDayTripNode") || [];
@@ -201,7 +206,7 @@ const DailyDests = () => {
                   <div className="relative h-[245px] w-full">
                     <Image
                       alt=""
-                      src={`https://backend.arrivotravel.com/media/${node.cardThumbnail}`}
+                      src={`${baseUrl}/media/${node.cardThumbnail}`}
                       fill
                       className="rounded-t-[12px]"
                     />

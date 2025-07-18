@@ -194,7 +194,14 @@ trip.importantInfos?.map((info)=>info.title || [])
           {trip.title}
           </h1>
         )}
+
+
+        
+
+        
       <ProgramPics trip={trip} isProgramTravel={isProgramTravel} />
+
+      
 
         {renderInfoBar()}
         <div className="mt-4 grid grid-cols-12 gap-4">
@@ -219,7 +226,15 @@ trip.importantInfos?.map((info)=>info.title || [])
           )}
         </div>
       </div>
-      <SimilarTrips />
+
+
+      
+    
+         <SimilarTrips tripId={trip.id} tripTags={trip.tags || []} isProgramTravel={isProgramTravel} />
+       
+      
+    
+
       <ReactModal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}

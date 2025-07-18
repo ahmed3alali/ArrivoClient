@@ -5,20 +5,28 @@ import Image from "next/image";
 import Link from "next/link";
 
 const GET_TRIP_PACKAGES = gql`
-  query GetTripPackages($tripId: ID!) {
-    tripPackages(tripId: $tripId) {
-      edges {
-        node {
-          id
-          price
-          groupSize
-          startDate
-          endDate
-        }
+
+query GetTripPackages($tripId: ID!) {
+  tripPackages(tripId: $tripId) {
+    edges {
+      node {
+        id
+        price
+        groupSize
+        startDate
+        endDate
       }
     }
   }
+  trip(id: $tripId) {
+    ... on MultiDayTripNode {
+      durationHours
+    }
+  }
+}
 `;
+
+
 
 const formatDateRange = (start, end) => {
   const startDate = new Date(start);
@@ -39,31 +47,63 @@ const formatDateRange = (start, end) => {
   return `${startDay} - ${endDay} ${arabicMonth}${yearPart}`;
 };
 
-
-
-const groupPackagesByGroupSizeAndMonth = (packages) => {
+const groupPackagesByGroupSizeAndMonth = (packages, durationHours) => {
+  const durationDays = Math.ceil(durationHours / 24); 
+  console.log(durationDays);
+console.log(durationHours);
+  
+  // Convert hours to full days
   const groups = {};
 
   packages.forEach((pkg) => {
     const groupKey = pkg.groupSize;
     const startDate = new Date(pkg.startDate);
-    const monthKey = startDate.toLocaleDateString("ar-EG", {
-      year: "numeric",
-      month: "long",
-    });
+    const endDate = new Date(pkg.endDate);
 
     if (!groups[groupKey]) groups[groupKey] = [];
-    let month = groups[groupKey].find((m) => m.monthN === monthKey);
 
-    if (!month) {
-      month = { monthN: monthKey, datesDays: [] };
-      groups[groupKey].push(month);
+    const currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      const rangeStart = new Date(currentDate);
+      const rangeEnd = new Date(currentDate);
+      rangeEnd.setDate(rangeEnd.getDate() + durationDays - 1);
+    
+      // Stop if the range end exceeds the package's end date
+      if (rangeEnd > endDate) break;
+    
+      const startDay = rangeStart.getDate().toString().padStart(2, "0");
+      const endDay = rangeEnd.getDate().toString().padStart(2, "0");
+    
+      const monthFormatter = new Intl.DateTimeFormat("ar-EG", {
+        month: "long",
+      });
+      const arabicMonth = monthFormatter.format(rangeStart);
+    
+      const sameYear = rangeStart.getFullYear() === rangeEnd.getFullYear();
+      const yearPart = sameYear ? "" : ` ${rangeEnd.getFullYear()}`;
+    
+      const rangeLabel = `${startDay} - ${endDay} ${arabicMonth}${yearPart}`;
+    
+      const monthKey = rangeStart.toLocaleDateString("ar-EG", {
+        year: "numeric",
+        month: "long",
+      });
+    
+      let month = groups[groupKey].find((m) => m.monthN === monthKey);
+      if (!month) {
+        month = { monthN: monthKey, datesDays: [] };
+        groups[groupKey].push(month);
+      }
+    
+      month.datesDays.push({
+        day: rangeLabel,
+        price: pkg.price,
+      });
+    
+      // ✅ Increment by durationDays instead of 1
+      currentDate.setDate(currentDate.getDate() + durationDays);
     }
-
-    month.datesDays.push({
-      day: formatDateRange(pkg.startDate, pkg.endDate),
-      price: pkg.price,
-    });
+    
   });
 
   return Object.entries(groups).map(([numberOfPeople, datesMonths]) => ({
@@ -105,13 +145,14 @@ const TimingsAndPrices = () => {
   });
 
   useEffect(() => {
-    if (data?.tripPackages?.edges) {
+    if (data?.tripPackages?.edges && data?.trip?.durationHours) {
       const allPackages = data.tripPackages.edges.map((e) => e.node);
-      const grouped = groupPackagesByGroupSizeAndMonth(allPackages);
+      const grouped = groupPackagesByGroupSizeAndMonth(allPackages, data.trip.durationHours);
       setStructuredData(grouped);
       setSelectedGroup(grouped[0]);
     }
   }, [data]);
+  
 
   const handleSelectGroup = (group) => setSelectedGroup(group);
 

@@ -1,8 +1,5 @@
 import Head from "next/head";
-import Offer from "../../components/sub/Offer";
-import Navbar from "../../components/common/Navbar";
-import Footer from "../../components/common/Footer";
-import Programs from "./programs/Programs";
+
 import {useEffect, useState} from "react";
 
 import app from "../../firebase";
@@ -10,6 +7,10 @@ import app from "../../firebase";
 import { useQuery } from "@apollo/client";
 import { GET_MULTI_DAY_TRIPS } from "../../graphql/queries";
 import ProgramsListPage from "../../components/ProgramsListPage";
+import Offer from "../../components/sub/Offer";
+import Navbar from "../../components/common/Navbar";
+import Footer from "../../components/common/Footer";
+import DailyTripsListPage from "../../components/DailyTripsListPage";
 import LoaderExternal from "../../components/LoadingExternal";
 
 export async function getServerSideProps() {
@@ -542,7 +543,9 @@ const TravelsPrograms = ({trips, data}) => {
           <Offer />
         </div>
         <Navbar />
-  <ProgramsListPage/>
+        <DailyTripsListPage></DailyTripsListPage>
+        
+  
       </main>
 
       <footer className="">

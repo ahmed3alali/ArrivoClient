@@ -1,315 +1,133 @@
-import React, {useEffect, useState} from "react";
-import ToursBar from "./tours/ToursBar";
-import Image from "next/image";
+import React, { useState, useEffect } from "react";
 
-import {motion} from "framer-motion";
-import Link from "next/link";
-import PrevTitle from "./PrevTitle";
-import { Ban } from 'lucide-react';
-import { useQuery } from '@apollo/client';
-import { GET_ONE_DAY_TRIPS } from '../graphql/queries' // Adjust path as needed
+import OneDayTripCard from "./OneDayTripCard";
 
-const Tour = ({tour, createPersonsArabic}) => {
-  // Map GraphQL data to component props
-  const tripStations = tour.provinces?.map(province => province.name) || [];
-  const displayedStations = tripStations.slice(0, 2);
 
-  if (tripStations.length > 2) {
-    displayedStations.push("والمزيد...");
-  }
-
-  const formattedStations = displayedStations.join(" - ");
-
-  return (
-    <div className="min-w-[285px] sm:col-span-6 md:col-span-4 xl:col-span-3">
-      <Link
-        href={`/travels-programs/${tour.id}`}
-        dir="rtl"
-        className="relative flex flex-col bg-white rounded-[12px]"
-        style={{
-          boxShadow: "0px 4px 8px rgba(91, 116, 130, 0.08)",
-          border: "1px solid rgba(152, 162, 179, 0.25)",
-        }}
-      >
-        <div className="relative h-[245px] w-full">
-          <Image
-            alt={tour.title || ""}
-            src={`https://backend.arrivotravel.com/media/${tour.cardThumbnail}` || "/images/default-tour.jpg" || ""}
-            fill
-            className="rounded-t-[12px]"
-          />
-          {tour.offerType && (
-            <div className="absolute top-[16px] right-[16px]">
-              <button className="outline-none bg-[#A05921] text-white py-[12px] px-[20px] flex items-center justify-center text-[12px] rounded-[12px]">
-                {tour.offerType}
-              </button>
-            </div>
-          )}
-        </div>
-        <div className="p-[16px] flex flex-col gap-[16px]">
-          {/* first part */}
-          <div className="flex flex-col gap-[8px]">
-            <div className="flex justify-between items-center">
-              <h6 className="font-bold-600 text-[16px]">{tour.title}</h6>
-            </div>
-            <p className="text-[12px] text-grey">{formattedStations}</p>
-            <div className="flex gap-x-[4px] items-center text-[12px] text-grey">
-              <Image alt="" src="/icons/daily/car.svg" height={20} width={20} />
-              رحلة خاصة
-            </div>
-          </div>
-          {/* second part */}
-          <div className="flex gap-x-[16px] items-center">
-            <p className="price font-bold-600 text-[36px]">
-              <span>$</span>
-              {tour.price}
-            </p>
-            <div className="flex flex-col gap-[2px] text-[12px] text-grey">
-              <p>{createPersonsArabic(tour.groupSize)}</p>
-              <div className="flex gap-x-[4px] pr-[8px]">
-                <Image
-                  alt=""
-                  src="/icons/daily/clock.svg"
-                  height={20}
-                  width={20}
-                />
-                <p className="flex gap-x-1">
-                  {tour.durationHours}
-                  <span>ساعات</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Link>
-    </div>
-  );
-};
-
+import ToursBar from "../components/tours/ToursBar"
+import OneTripCardSlider from "./OneTripCardSlider";
+import LoaderExternal from "./LoadingExternal";
 const Tours = () => {
-  const [arrowWhite, setArrowWhite] = useState(false);
-  const [country, setCountry] = useState("istanbul");
-  
-  // GraphQL query
-  const { loading, error, data } = useQuery(GET_ONE_DAY_TRIPS);
-  
-  // Filter trips based on selected country/province
-  const filteredPrograms = React.useMemo(() => {
-    if (!data?.trips?.edges) return [];
-    
-    const trips = data.trips.edges.map(edge => edge.node);
-    if (country === "groups") {
-      return trips.slice(0, 4);
-    }
-    
-    
-    return trips.filter(trip => 
-      trip.provinces?.some(province => 
-        province.name.toLowerCase().includes(country.toLowerCase()) ||
-        (country === "istanbul" && province.name.toLowerCase().includes("اسطنبول")) ||
-        (country === "trabzon" && province.name.toLowerCase().includes("طرابزون")) ||
-        (country === "antalya" && province.name.toLowerCase().includes("انطاليا")) ||
-        (country === "kapadokya" && province.name.toLowerCase().includes("كبادوكيا"))
-      )
-    );
-  }, [data, country]);
-
-  const createPersonsArabic = groupSize => {
-    if (!groupSize) return "غير محدد";
-    
-    const {from, to} = groupSize;
-    let toReturn = "";
-
-    //handle lower limit
-    if (from == 1) {
-      toReturn += "شخص";
-    } else if (from == 2) {
-      toReturn += "شخصين";
-    } else {
-      toReturn += `${from} ${to == 0 ? "أشخاص" : ""}`;
-    }
-
-    // handle upper limit
-    if (to == 0) {
-      toReturn += `${from == 1 ? "واحد" : ""}`;
-    } else {
-      toReturn += ` - ${to} أشخاص`;
-    }
-
-    return toReturn;
-  };
+  const [allTrips, setAllTrips] = useState([]);
+  const [filteredTrips, setFilteredTrips] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const buttons = [
-    {name: "trabzon", text: "طرابزون"},
-    {name: "istanbul", text: "اسطنبول"},
-    {name: "antalya", text: "انطاليا"},
-    {name: "groups", text: "رحلات جماعية"},
-    {name: "kapadokya", text: "كبودكيا"},
+    { name: "Trabzon", text: "طرابزون" },
+    { name: "İstanbul", text: "اسطنبول" },
+    { name: "antalya", text: "انطاليا" },
+    //{ name: "groups", text: "رحلات جماعية" },
+    //{ name: "kapadokya", text: "كبودكيا" },
   ];
 
-  const animateVariants = {
-    hidden: {
-      opacity: 0,
-      translateY: -30,
-    },
-    show: {
-      opacity: 1,
-      translateY: 0,
-      transition: {
-        delay: 0.4,
-        duration: 0.4,
-      },
-    },
+  // Fetch trips data (replace with your actual GraphQL query)
+  useEffect(() => {
+    const fetchTrips = async () => {
+      try {
+        // Your GraphQL query here
+        const query = `
+          query {
+            trips(lengthType: ONE_DAY) {
+              edges {
+                node {
+                  ... on OneDayTripNode {
+                    id
+                    title
+                    description
+                    durationHours
+                    thumbnail
+                    cardThumbnail
+                    price
+                    groupSize
+                    tags
+                    offerType
+                    galleryImages {
+                      id
+                      title
+                      picture
+                    }
+                    activities {
+                      id
+                    }
+                    provinces {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `;
+
+        // Replace with your actual GraphQL endpoint
+        const response = await fetch('/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query }),
+        });
+
+        const data = await response.json();
+        const trips = data.data.trips.edges;
+        
+        setAllTrips(trips);
+        setFilteredTrips(trips); // Initially show all trips
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching trips:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchTrips();
+  }, []);
+
+  const handleFilteredTrips = (trips) => {
+    setFilteredTrips(trips);
   };
 
-  const firstSix = filteredPrograms.slice(0, 8);
-
   if (loading) {
-    return (
-      <div className="py-[80px]">
-        <div className="flex flex-col items-center">
-          <div className="wrapper">
-            <div className="flex flex-col gap-y-[16px] items-center justify-center">
-              <div className="flex flex-col items-center gap-[6px]">
-                <PrevTitle prevTitle={"سيارة مع سائق"} />
-                <h2 className="text-[28px] md:text-[36px] font-bold-600">
-                  الرحلات السياحية
-                </h2>
-              </div>
-              <p className="md:max-w-[519px] text-[16px] text-grey text-center">
-                تجربة سياحية مميزة مع سائق خاص لتذهب إلى الأماكن السياحية الرائعة
-                بكل راحة وأمان. احجز رحلتك الآن واستمتع بتجربة فريدة من نوعها.
-              </p>
-            </div>
-          </div>
-          <ToursBar buttons={buttons} setCountry={setCountry} />
-        </div>
-        <div className="wrapper">
-          <div className="mt-8 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F08631]"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="py-[80px]">
-        <div className="flex flex-col items-center">
-          <div className="wrapper">
-            <div className="flex flex-col gap-y-[16px] items-center justify-center">
-              <div className="flex flex-col items-center gap-[6px]">
-                <PrevTitle prevTitle={"سيارة مع سائق"} />
-                <h2 className="text-[28px] md:text-[36px] font-bold-600">
-                  الرحلات السياحية
-                </h2>
-              </div>
-            </div>
-          </div>
-          <ToursBar buttons={buttons} setCountry={setCountry} />
-        </div>
-        <div className="wrapper">
-          <div className="flex flex-col w-[80vw] max-w-[600px] mx-auto items-center justify-center gap-4 text-center">
-            <Ban />
-            <h3 className="text-[20px] font-bold-600 text-[#555]">
-              حدث خطأ في تحميل البيانات
-            </h3>
-            <p className="text-[14px] text-grey max-w-[360px]">
-              {error.message}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
+    return  <LoaderExternal/>;
   }
 
   return (
-    <div className="py-[80px]">
-      <div className="flex flex-col items-center">
-        <div className="wrapper">
-          <div className="flex flex-col gap-y-[16px] items-center justify-center">
-            <div className="flex flex-col items-center gap-[6px]">
-              <PrevTitle prevTitle={"سيارة مع سائق"} />
-              <h2 className="text-[28px] md:text-[36px] font-bold-600">
-                الرحلات السياحية
-              </h2>
-            </div>
-            <p className="md:max-w-[519px] text-[16px] text-grey text-center">
-              تجربة سياحية مميزة مع سائق خاص لتذهب إلى الأماكن السياحية الرائعة
-              بكل راحة وأمان. احجز رحلتك الآن واستمتع بتجربة فريدة من نوعها.
-            </p>
-          </div>
-        </div>
-        <ToursBar buttons={buttons} setCountry={setCountry} />
-      </div>
-      {/* actual tours */}
-      <div className="wrapper">
-        <motion.div
-          key={country}
-          variants={animateVariants}
-          initial="hidden"
-          animate="show"
-          transition={{duration: 0.5}}
-          className="mt-8 flex overflow-x-scroll scrollbar-hide pb-3 sm:flex-none sm:grid sm:grid-cols-12 gap-[12px]"
-        >
-          {firstSix.length > 0 ? (
-            firstSix.map((tour, i) => (
-              <Tour
-                key={tour.id}
-                tour={tour}
-                createPersonsArabic={createPersonsArabic}
-              />
-            ))
-          ) : (
-            <div className="flex flex-col w-[80vw] max-w-[600px] mx-auto mr-[340px] items-center justify-center gap-4 text-center">
-              <Ban />
-              <h3 className="text-[20px] font-bold-600 text-[#555]">
-                لا توجد رحلات متاحة حالياً
-              </h3>
-              <p className="text-[14px] text-grey max-w-[360px]">
-                لم يتم العثور على رحلات لوجهتك المختارة. حاول تغيير الفلتر أو تحقق لاحقاً.
-              </p>
-            </div>
-          )}
-        </motion.div>
-        <Link
-          href={"/travels-programs?type=programs"}
-          className="w-full mt-4 flex items-center justify-center"
-        >
-          <button
-            onMouseOver={() => setArrowWhite(true)}
-            onMouseOut={() => setArrowWhite(false)}
-            className="py-[12px] px-[20px] rounded-[8px] border-[1px] hover:bg-[#F08631] hover:text-white border-[#F08631] text-[#F08631] flex items-center gap-x-[4px] text-[16px] transtion duration-200"
-          >
-            كل البرامج السياحية
-            <svg
-              width="25"
-              height="24"
-              viewBox="0 0 25 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M12.5 2.75024C5.563 2.75024 3.25 5.06324 3.25 12.0002C3.25 18.9372 5.563 21.2502 12.5 21.2502C19.437 21.2502 21.75 18.9372 21.75 12.0002C21.75 5.06324 19.437 2.75024 12.5 2.75024Z"
-                stroke={arrowWhite ? "#fff" : "#F6882F"}
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M13.9414 8.52856C13.9414 8.52856 10.4554 10.9206 10.4554 12.0006C10.4554 13.0806 13.9414 15.4706 13.9414 15.4706"
-                stroke={arrowWhite ? "#fff" : "#F6882F"}
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </Link>
-      </div>
+    <div>
+
+<div className="titles-container flex flex-col mt-8">
+
+<p className="m-auto text-orange">سيارة مع سائق</p>
+<h2 className="text-[24px] sm:text-[48px] md:text-[36px] font-bold-600 m-auto mb-8">الرحلات السياحية
+</h2>
+
+<p className="m-auto text-gray-500 text-[10px] md:text-[15px]">تجربة سياحية مميزة مع سائق خاص لتذهب إلى الأماكن السياحية الرائعة<br></br> بكل راحة وأمان. احجز رحلتك الآن واستمتع بتجربة فريدة من نوعها.</p>
+
+</div>
+
+
+      <ToursBar
+        buttons={buttons}
+        trips={allTrips}
+        onFilteredTrips={handleFilteredTrips}
+      />
+      
+      <div className="mt-8 w-full">
+  {filteredTrips.length === 0 ? (
+    <div className="col-span-full text-center py-8">
+      <p className="text-gray-500">لا توجد رحلات متاحة لهذا التصنيف</p>
+    </div>
+  ) : filteredTrips.length === 1 ? (
+    <div className="flex justify-center w-full">
+      <OneDayTripCard trip={filteredTrips[0]} isSingle={true} />
+    </div>
+  ) : (
+    <div className="w-full">
+      <OneTripCardSlider trips={filteredTrips} isSingle={false} />
+    </div>
+  )}
+</div>
+
+
     </div>
   );
 };

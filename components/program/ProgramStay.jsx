@@ -3,6 +3,7 @@ import Image from "next/image";
 
 // Your HotelTripStay unchanged
 
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const HotelTripStay = ({ residence }) => {
   return (
     <div
@@ -12,7 +13,7 @@ const HotelTripStay = ({ residence }) => {
         alt=""
         width={387}
         height={384}
-        src={`https://backend.arrivotravel.com/media/${residence.thumbnail}`}
+        src={`${baseUrl}/media/${residence.thumbnail}`}
         className="w-[252px] h-[240px] md:w-[387px] md:h-[384px] rounded-[12px] object-cover"
       />
       <div className="flex flex-col gap-[12px]">
@@ -71,7 +72,7 @@ const ProgramStay = ({ trip }) => {
       </div>
 
       {onlyOne ? (
-        <div className="mt-[24px] flex justify-center">
+        <div className="mt-[24px] flex justify-start">
           <HotelTripStay residence={uniqueResidences[0]} />
         </div>
       ) : (

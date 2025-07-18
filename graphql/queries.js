@@ -98,7 +98,14 @@ query GetTrip($id: ID!) {
       description
       tripType
       durationHours
+      galleryImages{
+        
+        id
+        title
+        picture
+      }
       lengthType
+      tags
       price
       groupSize
 
@@ -198,11 +205,13 @@ query GetTrip($id: ID!) {
        galleryImages{
         
         id
-        picture
+        title
+        picture 
       }
 
         durationHours
         lengthType
+        tags
         price
         groupSize
            placesOfResidence{
@@ -422,4 +431,82 @@ trips(lengthType: MULTI_DAY) {
 }
 
 `;
+
+
+export const GET_ALL_TRIPS = gql `
+
+query ListTrips(
+    $first: Int
+    $after: String
+    $country: String
+    $groupSize: String
+    $tags: [String]
+    $duration: String
+    $tripType: String
+    $subType: String
+    $price: String
+    $fromDate: Date
+    $toDate: Date
+    $lengthType: TripLengthTypeEnum
+  ) {
+    trips(
+      first: $first
+      after: $after
+      country: $country
+      groupSize: $groupSize
+      tags: $tags
+      duration: $duration
+      tripType: $tripType
+      subType: $subType
+      price: $price
+      fromDate: $fromDate
+      toDate: $toDate
+      lengthType: $lengthType
+    ) {
+      edges {
+        node {
+          __typename
+          ... on OneDayTripNode {
+            id
+            title
+            description
+            tripType
+            durationHours
+            lengthType
+            price
+            groupSize
+            thumbnail
+            cardThumbnail
+          }
+          ... on MultiDayTripNode {
+            id
+            title
+            description
+            tripType
+            durationHours
+            lengthType
+            price
+            groupSize
+            cardThumbnail
+            thumbnails {
+            
+                
+                  id
+                  image
+                
+              
+            }
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      totalCount
+    }
+  }
+
+
+`
 

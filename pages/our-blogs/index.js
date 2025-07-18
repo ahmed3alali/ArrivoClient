@@ -60,7 +60,14 @@ export default function Blogs({openModal, slideIn}) {
         <Navbar openModal={openModal} slideIn={slideIn} />
         <OurBlogs blogs={blogs} />
         <BlogPopularShort />
-        <ContactShort />
+
+        {/**
+         * 
+         *        <ContactShort />
+         * 
+         * 
+         */}
+ 
       </main>
 
       <footer className="">

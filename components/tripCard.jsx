@@ -7,6 +7,7 @@ import Link from "next/link";
 import PrevTitle from "./PrevTitle";
 import { useQuery } from "@apollo/client";
 import { GET_MULTI_DAY_TRIPS } from "../graphql/queries";
+import LoaderExternal from "./LoadingExternal";
 
 
 const titleVariants = {
@@ -42,9 +43,7 @@ const Destinations = () => {
 
   if (loadingMultiTrips) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
+     <LoaderExternal/>
     );
   }
 

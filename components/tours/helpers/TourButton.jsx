@@ -1,20 +1,19 @@
 import React from "react";
-import {useG} from "../../../context/OurContext";
 
-const TourButton = ({name, text, setCountry}) => {
-  const {toursBar, setToursBar} = useG();
-
+const TourButton = ({ name, text, isActive, onClick }) => {
   return (
     <button
-      onClick={() => {
-        setToursBar(name);
-        setCountry(name);
-      }}
-      className={`outline-none py-[8px] px-[8px] sm:px-[16px] h-[40px] text-[12px] sm:text-[16px] text-white rounded-[32px] flex items-center justify-center ${
-        toursBar === name && "text-black bg-white"
-      }`}
+      onClick={onClick}
+      className={`
+        px-4 py-2 rounded-[36px] text-sm font-medium transition-all duration-200
+        whitespace-nowrap min-w-fit
+        ${isActive 
+          ? 'bg-white text-orange shadow-sm' 
+          : 'bg-transparent text-white hover:bg-white hover:bg-opacity-10'
+        }
+      `}
     >
-      <span className={`${toursBar === name && "text-black"}`}>{text}</span>
+      {text}
     </button>
   );
 };

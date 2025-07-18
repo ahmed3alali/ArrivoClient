@@ -4,6 +4,8 @@ import ReactModal from "react-modal";
 import { gql, useQuery } from "@apollo/client";
 import FilterBar from "../../../components/FilterBar";
 import ProgramsMainBody from "./ProgramsMainBody";
+import LoaderExternal from "../../../components/LoadingExternal";
+import { ErrorMessage } from "../../../components/ErrorMessage";
 
 ReactModal.setAppElement("#__next");
 
@@ -194,13 +196,11 @@ const Programs = () => {
   
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
+      <LoaderExternal/>
     );
   }
 
-  if (error) return <p>Error loading trips</p>;
+  if (error) return <ErrorMessage/>;
 
   return (
     <>

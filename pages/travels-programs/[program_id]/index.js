@@ -9,6 +9,8 @@ import Modal from "react-modal";
 import { GET_MULTI_DAY_TRIP_BYID, GET_TRIP_BY_ID } from "../../../graphql/queries";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
+import LoaderExternal from "../../../components/LoadingExternal";
+import { ErrorMessage } from "../../../components/ErrorMessage";
 
 export async function getServerSideProps({params}) {
   const {program_id} = params;
@@ -32,13 +34,11 @@ const ProgramPage = ({ type }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
+     <LoaderExternal/>
     );
   }
 
-  if (error) return <p>Error loading program.</p>;
+  if (error) return <ErrorMessage/>;
 
 
   const breadcrumbs = [
@@ -47,7 +47,7 @@ const ProgramPage = ({ type }) => {
       name: "البرامج السياحية",
       path: "/travels-programs?type=programs",
     },
-    {name: "الشمال التركي", path: "/travels-programs/program"},
+    {name: data?.trip?.title, path: `/travels-programs/${data?.trip?.id}`},
   ];
   return (
     
@@ -68,13 +68,18 @@ const ProgramPage = ({ type }) => {
         <div className="mt-[30px] md:mt-[50px]">
           <BreadCrumb breadcrumbs={breadcrumbs} />
         </div>
-        <Program
-        trip={data?.trip}
-          type={type}
-          openModal={openModal}
-          modalIsOpen={modalIsOpen}
-          closeModal={closeModal}
-        />
+        {!data?.trip?.id ? (
+  <div className="text-center py-10 text-gray-500">No trip data available</div>
+) : (
+  <Program
+    trip={data.trip}
+    type={type}
+    openModal={openModal}
+    modalIsOpen={modalIsOpen}
+    closeModal={closeModal}
+  />
+)}
+
         {/* <SimilarOffers /> */}
       </main>
 

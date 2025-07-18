@@ -83,7 +83,7 @@ const Hero = () => {
           <div className="cards col-span-12 sm:col-span-5 lg:col-span-3">
             <div className="grid grid-cols-12 gap-[12px]">
               <div className="card1 order-2 md:order-1 col-span-6 sm:col-span-4 h-[226px] md:h-[342px] relative hover:translate-y-[-10px] transition duration-[0.5s]">
-                <Link href={`/travels-programs?type=programs&country=trabzaon`}>
+                <Link href={`/travels-programs?type=programs&country=trabzon`}>
                   <Image
                     src="/images/hero/tabzon.png"
                     alt="trabzon"

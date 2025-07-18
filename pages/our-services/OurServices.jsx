@@ -36,7 +36,9 @@ const OurServices = () => {
       </div>
       <Enjoy />
       <BlogShort />
-      <ContactShort />
+
+      {/**   <ContactShort />*/}
+    
     </div>
   );
 };

@@ -4,7 +4,7 @@ import Slider from "react-slick";
 
 const SlickSlider = ({children, settings}) => {
   return (
-    <div className="relative">
+    <div className="relative ">
       <Head>
         <link
           rel="stylesheet"

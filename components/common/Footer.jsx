@@ -2,9 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const fbLink = "";
-const igLink = "";
-const twitterLink = "";
+const tiktokLink = "https://www.tiktok.com/@arrivo_travel?_t=ZS-8y6tV1CrGEh&_r=1";
+const igLink = "https://www.instagram.com/travel_with_arrivo?igsh=N2N1NGQ2dWNmeW5v";
+const twitterLink = "https://x.com/arrivo_travel/status/1823420270612504966?s=46";
 
 const currentYear = new Date().getFullYear();
 
@@ -183,10 +183,14 @@ const Footer = () => {
               </div>
             </div>
             <div className="col-span-12 md:col-span-6 flex flex-col gap-[16px]">
-              <h4 className="text-[18px] font-bold-600 text-black">
+              {/**
+               * 
+               * 
+               *      <h4 className="text-[18px] font-bold-600 text-black">
                 القائمة البريدية
               </h4>
-              <form className="flex flex-col gap-[8px]">
+
+          <form className="flex flex-col gap-[8px]">
                 <label
                   htmlFor=""
                   className="font-bold-400 text-[12px] text-[#344054]"
@@ -202,6 +206,11 @@ const Footer = () => {
                   إشترك معنا
                 </button>
               </form>
+               * 
+               * 
+               */}
+         
+    
               <div className="flex gap-[12px] items-center">
                 <p className="text-[#3E444D] text-[12px]">تواصل معنا</p>
                 <Link href={igLink}>
@@ -224,7 +233,7 @@ const Footer = () => {
                     />
                   </div>
                 </Link>
-                <Link href={fbLink}>
+                <Link href={tiktokLink}>
                   <div className="rounded-full border-[1px] border-solid border-black p-[6px] hover:bg-orange ease-out duration-300">
                     <Image
                       alt=""

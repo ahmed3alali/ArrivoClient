@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-const backendHost = process.env.NEXT_PUBLIC_BACKEND_HOST;
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const OneLocation = ({loc}) => {
 
@@ -19,7 +19,7 @@ const OneLocation = ({loc}) => {
       <div className="w-full aspect-square md:h-[183px] relative">
         <Image
           alt=""
-          src={`https://backend.arrivotravel.com/media/${loc.img}`}
+          src={`${baseUrl}/media/${loc.img}`}
           className="object-cover rounded-[8px]"
           fill
         />

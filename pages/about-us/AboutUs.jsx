@@ -17,7 +17,13 @@ const AboutUs = () => {
       <AboutUsServices />
       <Enjoy />
       <BlogShort />
-      <ContactShort />
+      {/**
+       * 
+       * 
+       *       <ContactShort />
+       * 
+       */}
+
     </div>
   );
 };

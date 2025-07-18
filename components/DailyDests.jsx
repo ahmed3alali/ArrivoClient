@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SlickSlider from "./sub/SlickSlider";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -6,6 +6,10 @@ import Link from "next/link";
 import PrevTitle from "./PrevTitle";
 import { useQuery } from "@apollo/client";
 import { GET_ONE_DAY_TRIPS } from "../graphql/queries";
+import OneDayTripCard from "./OneDayTripCard";
+import TripCardSlider from "./OneTripCardSlider";
+import LoaderExternal from "./LoadingExternal";
+import { ErrorMessage } from "./ErrorMessage";
 
 
 
@@ -20,23 +24,44 @@ const titleVariants = {
 };
 
 const DailyDests = () => {
+  
+  
+  function useWindowWidth() {
+    const [width, setWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1024);
+  
+    useEffect(() => {
+      const handleResize = () => setWidth(window.innerWidth);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+  
+    return width;
+  }
+
+  const width = useWindowWidth();
+  const isMobile = width < 768;
+
+
+  
   const { loading, error, data } = useQuery(GET_ONE_DAY_TRIPS);
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      </div>
+      <LoaderExternal/>
     );
   }
 
-  if (error) return <p>Error loading trips</p>;
+
+  if (error) return <ErrorMessage/>;
 
   const oneDayTrips =
     data?.trips?.edges?.filter(({ node }) => node.__typename === "OneDayTripNode") || [];
 
+
+
+
     const settings = {
-      rtl: true,
-      infinite: false,
+      rtl: !isMobile,
+      infinite: false,  
       speed: 800,
       slidesToShow: 4,
       slidesToScroll: 2,
@@ -44,15 +69,24 @@ const DailyDests = () => {
       autoplaySpeed: 3000,
       cssEase: "ease",
       pauseOnHover: true,
-      arrows: true, // <- Force arrows
-      nextArrow: <SampleNextArrow rtl={true} />,
-      prevArrow: <SamplePrevArrow rtl={true} />,
+      nextArrow: <SampleNextArrow />,
+      prevArrow: <SamplePrevArrow />,
       responsive: [
-        { breakpoint: 1280, settings: { slidesToShow: 3, slidesToScroll: 2 } },
-        { breakpoint: 768, settings: { slidesToShow: 2, slidesToScroll: 1 } },
-        { breakpoint: 640, settings: { slidesToShow: 1.2, slidesToScroll: 1 } },
+        {
+          breakpoint: 1280,
+          settings: { slidesToShow: 3, slidesToScroll: 2 },
+        },
+        {
+          breakpoint: 768,
+          settings: { slidesToShow: 2, slidesToScroll: 1 },
+        },
+        {
+          breakpoint: 640,
+          settings: { slidesToShow: 1.2, slidesToScroll: 1 },
+        },
       ],
     };
+  
     
   const createPersonsArabic = (groupSize) => {
     if (!groupSize) return "";
@@ -81,86 +115,37 @@ const DailyDests = () => {
           </div>
         </div>
 
-        <div className="mt-[48px] scale-x-[-1] sm:scale-x-[1] relative" dir="rtl">
-          <SlickSlider settings={settings}>
-            {oneDayTrips.map(({ node }) => (
-              <Link
-                key={node.id}
-                href={`/travels-programs/${node.id}`}
-                className="mb-4 scale-x-[-1] sm:scale-x-[1] "
-              >
-                <div
-                  dir="rtl"
-                  className="relative flex flex-col bg-white rounded-[12px] mx-[5px] h-[440px]"
-                  style={{
-                    boxShadow: "0px 4px 8px rgba(91, 116, 130, 0.08)",
-                    border: "1px solid rgba(152, 162, 179, 0.25)",
-                  }}
-                >
-                  <div className="relative h-[245px] w-full flex-shrink-0">
-                    <Image
-                      alt=""
-                      src={`https://backend.arrivotravel.com/media/${node.cardThumbnail}`}
-                      fill
-                      className="rounded-t-[12px] object-cover"
-                    />
-                    <div className="absolute top-[16px] right-[16px]">
-                      <button className="outline-none bg-[#F08631] text-white py-[12px] px-[20px] flex items-center justify-center text-[12px] rounded-[12px]">
-                        {node?.offerType}
-                      </button>
-                    </div>
-                    <div className="absolute bottom-2 right-[5px]">
-                      <span className="bg-green-700 text-white text-[10px] py-[7px] px-[12px] rounded-[8px]">
-                        {node.programType || "رحلة سياحية "}
-                      </span>
-                    </div>
-                  </div>
 
-                  <div className="p-[16px] flex flex-col gap-[16px] h-[175px]">
-                    <div className="flex flex-col gap-[8px] ">
-                      <div className="flex justify-between items-center">
-                        <h6 className="font-bold-600 text-[16px] line-clamp-1">{node?.title}</h6>
-                      </div>
-                      <div className="h-[32px] flex items-start">
-                        <p className="text-[12px] text-grey line-clamp-2">{node?.description}</p>
-                      </div>
-                      <div className="flex gap-x-[4px] items-center text-[12px] text-grey">
 
-                        {/**
-                         * 
-                         * 
-                         * 
-                         * 
-                         *   <Image alt="" src="/icons/daily/car.svg" height={20} width={20} />
-                        رحلة خاصة
-                         * 
-                         */}
-                      
-                      </div>
-                    </div>
 
-                    <div className="flex gap-x-[16px] items-center mt-auto ">
-                      <p className="price font-bold-600 text-[36px] ">
-                        <span  >$</span>
-                        {node?.price}
-                      </p>
-                      <div className="flex flex-col gap-[2px] text-[12px] text-grey mr-auto">
-                        <p>{createPersonsArabic(node?.groupSize)}</p>
-                        <div className="flex gap-x-[4px] pr-[8px] mr-auto">
-                          <Image alt="" src="/icons/daily/clock.svg" height={20} width={20} />
-                          <p className="flex gap-x-1">
-                            {node?.durationHours}
-                            <span> ساعات</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </SlickSlider>
+
+{oneDayTrips.length ===1 ? (
+
+
+
+<div className=" flex justify-center md:justify-start  md:w-[320px] md:mr-4 mt-[48px] scale-x-[-1] sm:scale-x-[1] relative" dir="rtl">
+<OneDayTripCard isSingle={true} data={oneDayTrips} />
+</div>
+
+
+
+
+
+
+
+):(
+
+
+  <div className="mt-[48px] relative" dir="rtl">
+     <TripCardSlider trips={oneDayTrips} isSingle={false}></TripCardSlider>
         </div>
+
+
+
+
+)}
+
+      
       </div>
     </div>
   );

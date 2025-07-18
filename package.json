@@ -28,7 +28,8 @@
     "react-phone-number-input": "^3.2.23",
     "react-select": "^5.7.3",
     "react-slick": "^0.29.0",
-    "swiper": "^11.2.10"
+    "swiper": "^11.2.10",
+    "tailwind-scrollbar-hide": "^4.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",

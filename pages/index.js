@@ -478,9 +478,10 @@ export default function Home({openModal, slideIn, trips}) {
         {/**
          * 
          *     <BlogShort />
+         *      <ContactShort />
          */}
     
-        <ContactShort />
+   
       </main>
 
       <footer className="">

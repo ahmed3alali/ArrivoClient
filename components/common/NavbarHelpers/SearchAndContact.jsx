@@ -19,19 +19,23 @@ const SearchAndContact = () => {
   };
 
   const handleInputChange = (e) => {
-    const value = e.target.value;
-    setInputValue(value);
-    if (value !== "") {
+    const rawValue = e.target.value;
+  
+    const sanitizedValue = rawValue.replace(/[^a-zA-Z0-9ığüşöçİĞÜŞÖÇء-يآأإىةًٌٍَُِّ ]/g, "");
+  
+    setInputValue(sanitizedValue);
+  
+    if (sanitizedValue !== "") {
       const filteredSuggestions = ["رحلة عرسان", "طرابزون", "اسطنبول"].filter(
         (suggestion) =>
-          suggestion.toLowerCase().startsWith(value.toLowerCase()) // or use includes if you want contains
+          suggestion.toLowerCase().startsWith(sanitizedValue.toLowerCase())
       );
       setSuggestions(filteredSuggestions);
     } else {
       setSuggestions(["اسطنبول", "طرابزون", "رحلة عرسان"]);
     }
   };
-
+  
   const goToResults = (title) => {
     router.push(`/travels-programs?type=programs&title=${encodeURIComponent(title)}`);
   };
@@ -50,6 +54,9 @@ const SearchAndContact = () => {
       transition: { duration: 0.6 },
     },
   };
+
+
+
 
   return (
     <div

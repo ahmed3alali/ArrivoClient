@@ -74,12 +74,26 @@ const BoxInfo = ({trip}) => {
 )}
 
      
-      <hr className="h-[1px] bg-[#E9EAEC]" />
+
+
+
+
+{isProgramTravel ? (
       <InfoQuick
+      title="حجم المجموعة"
+      value={`${trip?.groupSize || "غير محدد"} شخص`}
+      icon="group.png"
+    />
+) : (
+  <InfoQuick
   title="حجم المجموعة"
-  value={`${trip?.groupSize || "غير محدد"} شخص`}
+  value={`2-16 شخص `}
   icon="group.png"
 />
+)}
+
+
+
 
     </div>
   );

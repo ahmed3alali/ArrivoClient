@@ -74,6 +74,17 @@ const Menu = ({ handleShowDropdown, showDropdown, setShowDropdown }) => {
     }
   ];
 
+
+  const handleClickPrograms = () => {
+    router.push('/travels-programs');
+  };
+
+  const handleClickDailyTrips = () => {
+    router.push('/travels-dailyTrips');
+  };
+
+
+
   return (
     <div className="hidden md:flex gap-x-8 lg:gap-x-12 items-center relative">
       {/* Services Dropdown */}
@@ -194,7 +205,7 @@ const Menu = ({ handleShowDropdown, showDropdown, setShowDropdown }) => {
       </AnimatePresence>
 
       {/* Navigation Links */}
-      <Link href="/travels-programs?type=programs">
+      <button onClick={handleClickPrograms}>
         <motion.div
           whileHover={{ scale: 1.05 }}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-gray-50 transition-all duration-200 ${isActive("/travels-programs")}`}
@@ -204,7 +215,21 @@ const Menu = ({ handleShowDropdown, showDropdown, setShowDropdown }) => {
             جديد
           </span>
         </motion.div>
-      </Link>
+      </button>
+
+      <button onClick={handleClickDailyTrips}>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-gray-50 transition-all duration-200 ${isActive("/travels-dailyTrips")}`}
+        >
+          <span className="text-sm font-medium">الرحلات اليومية </span>
+          
+        </motion.div>
+      </button>
+
+
+
+
 
       <motion.button
         whileHover={{ scale: 1.05 }}

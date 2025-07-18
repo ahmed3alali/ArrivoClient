@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-const backendHost = process.env.NEXT_PUBLIC_BACKEND_HOST || "https://backend.arrivotravel.com";
+const backendHost = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const OneContent = ({ cont }) => {
   const { icon, title, description } = cont;

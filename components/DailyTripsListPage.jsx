@@ -7,6 +7,8 @@ import { Search, Filter, MapPin, Clock, Users, Star, Heart, Share2, Calendar, Co
 import MultiDayTripCard from './MultiDayTripCard';
 import { HeroSquares } from './HeroSquares';
 import BreadCrumb from './BreadCrumb';
+import { GET_ONE_DAY_TRIPS } from '../graphql/queries';
+import OneDayTripCard from './OneDayTripCard';
 import LoaderExternal from './LoadingExternal';
 import { ErrorMessage } from './ErrorMessage';
 
@@ -42,13 +44,13 @@ const GET_TRIPS = gql`
   }
 `;
 
-const ProgramsListPage = () => {
+const DailyTripsListPage = () => {
 
   // Routering and fetching data ... 
 
 
   const router = useRouter();
-  const { loading, error, data } = useQuery(GET_TRIPS);
+  const { loading, error, data } = useQuery(GET_ONE_DAY_TRIPS);
   
   // State management
   const [searchTerm, setSearchTerm] = useState('');
@@ -137,7 +139,7 @@ const ProgramsListPage = () => {
   
     const trips = data.trips.edges.map(({ node }) => node);
     const prices = trips.map(t => parseInt(t.price) || 0).filter(p => p > 0);
-    const days = trips.map(t => getDaysFromHours(t.durationHours)).filter(d => d > 0);
+    const days = trips.map(t => (t.durationHours)).filter(d => d > 0);
     
     // Parse group sizes from strings like "2-3"
     const groupSizeRanges = trips
@@ -311,17 +313,11 @@ if (selectedCountry && node.provinces &&
     if (['trabzon', 'طرابزون'].includes(normalized)) {
       return 'طرابزون';
     }
-
-
-    if (['rize','Rize', 'ريزا'].includes(normalized)) {
-      return 'ريزا';
-    }
-
-
     
     return city;
   };
   
+
 
 
 
@@ -426,15 +422,15 @@ if (selectedCountry && node.provinces &&
 
   if (error) {
     return (
-  <ErrorMessage/>
+ <ErrorMessage/>
     );
   }
 
   const breadcrumbs = [
     {name: "الصفحة الرئيسية", path: "/"},
     {
-      name: "البرامج السياحية",
-      path: "/travels-programs?type=programs",
+      name: " الرحلات اليومية",
+      path: "/travels-dailyTrips",
     },
 
   ];
@@ -449,7 +445,7 @@ if (selectedCountry && node.provinces &&
   style={{
     backgroundImage: selectedCountry || searchTerm
       ? "url('/images/programs/ArrivoSearchResults.jpg')"
-      : "url('/images/programs/BackgroundProgramsBanner.webp')",
+      : "url('/images/programs/GalleryOzngol.jpg')",
   }}
 >
 
@@ -462,14 +458,14 @@ if (selectedCountry && node.provinces &&
     ? renderSearchResults(selectedCountry)
     : searchTerm
     ? renderSearchResults(searchTerm)
-    : 'البرامج سياحية'}
+    : 'الرحلات اليومية'}
 </h1>
 
       <p className="text-xs md:text-sm mb-8 opacity-90">
       أفضل الأماكن السياحية في تركيا الشمالية ضمن برامج سياحية كاملة.
       </p>
 
-      {!selectedCountry && !searchTerm && <HeroSquares />}
+      {!selectedCountry && !searchTerm }
     </div>
   </div>
         {/* Decorative elements */}
@@ -547,8 +543,8 @@ if (selectedCountry && node.provinces &&
                   {/* Duration Range Slider */}
                   <div className="relative mb-6">
   <div className="flex justify-between text-sm text-gray-600 mb-2">
-    <span>يوم واحد</span>
-    <span>20 يوم</span>
+    <span>ساعة واحدة</span>
+    <span>20 ساعة</span>
   </div>
   <div className="relative" dir="rtl">
     <input
@@ -571,7 +567,7 @@ if (selectedCountry && node.provinces &&
                   {/* Days Input */}
                   <div>
                     <label className="block text-sm font-medium text-gray-600 mb-2">
-                      عدد الأيام
+                      عدد الساعات
                     </label>
                     <div className="relative">
                       <input
@@ -580,7 +576,7 @@ if (selectedCountry && node.provinces &&
                         max="20"
                         value={daysInput}
                         onChange={(e) => handleDurationChange(e.target.value)}
-                        placeholder="اختر عدد الأيام"
+                        placeholder="اختر عدد الساعات"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-right text-xs"
                       />
                       <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -762,7 +758,7 @@ if (selectedCountry && node.provinces &&
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
               {filteredTrips.map(({ node }) => (
                 <div key={node.id} className=" w-full md:w-[320px] lg:w-[320px] ">
-                  <MultiDayTripCard trip={node} isSingle={false} />
+                  <OneDayTripCard trip={node} isSingle={false} />
                 </div>
               ))}
             </div>
@@ -818,4 +814,4 @@ if (selectedCountry && node.provinces &&
   );
 };
 
-export default ProgramsListPage;
+export default DailyTripsListPage;
