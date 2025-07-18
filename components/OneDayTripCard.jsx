@@ -25,7 +25,7 @@ const hoursModifier = (num) => {
 
 
 const OneDayTripCard = ({ trip, isSingle, data }) => {
-  console.log("Base URL:", process.env.NEXT_PUBLIC_API_BASE_URL);
+
 
   const tripData = isSingle ? data?.[0]?.node : trip;
 
